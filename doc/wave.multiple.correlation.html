@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Wavelet routine for multiple correlation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for wave.multiple.correlation"><tr><td>wave.multiple.correlation</td><td align="right">R Documentation</td></tr></table>
+
+<h2>
+Wavelet routine for multiple correlation
+</h2>
+
+<h3>Description</h3>
+
+<p>
+Produces an estimate of the multiscale multiple correlation
+(as defined below) along with approximate confidence intervals.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+wave.multiple.correlation(xx, N, p = 0.975, ymaxr=NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>xx</code></td>
+<td>
+
+A list of <i>n</i> (multiscaled) time series, usually the outcomes of dwt or modwt, <EM>i.e.</EM>
+xx &lt;- list(v1.modwt.bw, v2.modwt.bw, v3.modwt.bw)</td></tr>
+<tr valign="top"><td><code>N</code></td>
+<td>
+
+length of the time series
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+
+one minus the two-sided p-value for the confidence interval, <EM>i.e.</EM> the cdf value.
+</td></tr>
+<tr valign="top"><td><code>ymaxr</code></td>
+<td>
+
+index number of the variable whose correlation is calculated against a linear combination
+of the rest, otherwise at each wavelet level wmc chooses
+the one maximizing the multiple correlation.
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>
+The routine calculates one single set of wavelet multiple correlations out of <i>n</i> variables
+that can be plotted in a single graph, as an
+alternative to trying to make sense out of <i>n(n-1)/2</i> sets of wavelet correlations. The code is
+based on the calculation, at each wavelet scale, of the square root of the coefficient of
+determination in the linear combination of variables for which such coefficient of determination
+is a maximum. The code provided here is based on the wave.correlation routine in Brandon
+Whitcher's <EM>waveslim</EM> <font face="Courier New,Courier" color="#666666"><b>R</b></font> package Version: 1.6.4, which in turn is based on wavelet methodology
+developed in Percival and Walden (2000); Gencay, Selcuk and Whitcher (2001) and others.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+List of two elements:<br>
+<EM>xy.mulcor:</EM> matrix with as many rows as levels in the wavelet transform object.
+The first column provides the point estimate for the wavelet multiple correlation,
+followed by the lower and upper bounds from the confidence interval.<br>
+<EM>YmaxR:</EM> numeric vector giving, at each wavelet level, the index number of the variable whose
+correlation is calculated against a linear combination of the rest. By default,
+<EM>wmc</EM> chooses at each wavelet level the variable maximizing the multiple correlation.
+</p>
+
+
+<h3>Note</h3>
+
+<p>
+Needs <EM>waveslim</EM> package to calculate <EM>dwt</EM> or <EM>modwt</EM> coefficients as inputs to the routine (also for data in the example).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Javier Fernández-Macho,
+Dpt. of Econometrics and Statistics,
+&amp; Instituto de Economía Pública,
+University of the Basque Country, Agirre Lehendakari etorb. 83, E48015 BILBAO, Spain.
+(email: javier.fernandezmacho@ehu.es).
+</p>
+
+
+<h3>References</h3>
+
+<p>
+Fernández-Macho, Javier (2011) The wavelet multiple correlation, (mimeo).
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Based on data from Figure 7.8 in Gencay, Selcuk and Whitcher (2001)
+## plus one random series.
+
+library(wavemulcor)
+data(exchange)
+returns &lt;- diff(log(as.matrix(exchange)))
+returns &lt;- ts(returns, start=1970, freq=12)
+wf &lt;- "d4"
+J &lt;- 6
+
+demusd.modwt &lt;- modwt(returns[,"DEM.USD"], wf, J)
+demusd.modwt.bw &lt;- brick.wall(demusd.modwt, wf)
+jpyusd.modwt &lt;- modwt(returns[,"JPY.USD"], wf, J)
+jpyusd.modwt.bw &lt;- brick.wall(jpyusd.modwt, wf)
+rand.modwt &lt;- modwt(rnorm(length(returns[,"DEM.USD"])), wf, J)
+rand.modwt.bw &lt;- brick.wall(rand.modwt, wf)
+
+xx &lt;- list(demusd.modwt.bw, jpyusd.modwt.bw, rand.modwt.bw)
+
+Lst &lt;- wave.multiple.correlation(xx, N = length(xx[[1]][[1]])) 
+returns.modwt.cor &lt;- Lst$xy.mulcor[1:J,]
+YmaxR &lt;- Lst$YmaxR
+
+exchange.names &lt;- c("DEM.USD", "JPY.USD", "RAND")
+
+##Producing plot
+
+par(mfrow=c(1,1), las=0, mar=c(5,4,4,2)+.1)
+matplot(2^(0:(J-1)), returns.modwt.cor[-(J+1),], type="b", 
+  log="x", pch="*LU", xaxt="n", lty=1, col=c(1,4,4), 
+  xlab="Wavelet Scale", ylab="Wavelet Multiple Correlation")
+axis(side=1, at=2^(0:7))
+abline(h=0)
+text(2^(0:7), min(returns.modwt.cor[-(J+1),])-0.03, 
+  labels=exchange.names[YmaxR], adj=0.5, cex=.5)
+</pre>
+
+
+</body></html>

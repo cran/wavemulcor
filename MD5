@@ -1,0 +1,11 @@
+59b2acaca771087f629fcc5537278008 *DESCRIPTION
+40b1b56f27a81a9aab3d0f840d8de015 *NAMESPACE
+b7db19e57902078af3cc1ad0259af9f7 *R/wave.multiple.correlation.R
+6b82346901d7bba575777ac3d2f994c9 *R/wave.multiple.cross.correlation.R
+51e3fbbc6d859a20680794c5d0836d85 *doc/wave.multiple.correlation.html
+19ccc2cc31f3c7fa9d3e299d270dc0b0 *doc/wave.multiple.cross.correlation.html
+9a5b2d23e43fee5cdbd14dbd60512ea6 *doc/wavemulcor-manual.pdf
+14a4e87875eced40d68baa4549e87bd9 *doc/wavemulcor-package.html
+7eaa17dc9078cf5aa9c919a82dfda55f *man/wave.multiple.correlation.Rd
+7e6f7401dd23f5de49be7989525b6841 *man/wave.multiple.cross.correlation.Rd
+12c250b2d062393a5ab0cd1beac5b8c0 *man/wavemulcor-package.Rd
