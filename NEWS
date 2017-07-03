@@ -1,0 +1,9 @@
+             2017-07-01 Version 2.1.0 released.
+             Version 2 incorporates wavelet local multiple correlations (WLMC).
+             These are like the previous global WMC but consisting in one
+             single set of multiscale correlations along time. That is, at each time
+             t, they are calculated by letting a window of weighted wavelet
+             coefficients around t move along time. Six weight functions are provided.
+             Namely, the  uniform window, Cleveland's tricube window, Epanechnikov's
+             parabolic window, Bartlett's triangular window and Wendland's truncated
+             power window and the Gaussian window.

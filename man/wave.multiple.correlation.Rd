@@ -1,4 +1,3 @@
-\encoding{latin1}
 \name{wave.multiple.correlation}
 \alias{wave.multiple.correlation}
 \alias{wmc}
@@ -36,7 +35,7 @@ wave.multiple.correlation(xx, N, p = 0.975, ymaxr=NULL)
  determination in the linear combination of variables for which such coefficient of determination
  is a maximum. The code provided here is based on the wave.correlation routine in Brandon
  Whitcher's \emph{waveslim} \R package Version: 1.6.4, which in turn is based on wavelet methodology
- developed in Percival and Walden (2000); Gencay, Selcuk and Whitcher (2001) and others.
+ developed in Percival and Walden (2000); Gen√ßay, Sel√ßuk and Whitcher (2001) and others.
 }
 \value{
 List of two elements:\cr
@@ -48,14 +47,14 @@ correlation is calculated against a linear combination of the rest. By default,
 \emph{wmc} chooses at each wavelet level the variable maximizing the multiple correlation.
 }
 \references{
- Fern·ndez-Macho, Javier (2011) The wavelet multiple correlation, (mimeo).
+ Fern√°ndez-Macho, J., 2012. Wavelet multiple correlation and cross-correlation: A multiscale analysis of Eurozone stock markets. Physica A: Statistical Mechanics and its Applications 391, 1097-1104. doi:10.1016/j.physa.2011.11.002
 }
 \author{
-Javier Fern·ndez-Macho,
+Javier Fern√°ndez-Macho,
 Dpt. of Econometrics and Statistics,
-& Instituto de EconomÌa P˙blica,
+& Instituto de Econom√≠a P√∫blica,
 University of the Basque Country, Agirre Lehendakari etorb. 83, E48015 BILBAO, Spain.
-(email: javier.fernandezmacho@ehu.es).
+(email: javier.fernandezmacho@ehu.eus).
 }
 \note{
  Needs \emph{waveslim} package to calculate \emph{dwt} or \emph{modwt} coefficients as inputs to the routine (also for data in the example).
@@ -80,7 +79,7 @@ rand.modwt.bw <- brick.wall(rand.modwt, wf)
 
 xx <- list(demusd.modwt.bw, jpyusd.modwt.bw, rand.modwt.bw)
 
-Lst <- wave.multiple.correlation(xx, N = length(xx[[1]][[1]])) 
+Lst <- wave.multiple.correlation(xx, N = length(xx[[1]][[1]]))
 returns.modwt.cor <- Lst$xy.mulcor[1:J,]
 YmaxR <- Lst$YmaxR
 
@@ -89,12 +88,12 @@ exchange.names <- c("DEM.USD", "JPY.USD", "RAND")
 ##Producing plot
 
 par(mfrow=c(1,1), las=0, mar=c(5,4,4,2)+.1)
-matplot(2^(0:(J-1)), returns.modwt.cor[-(J+1),], type="b", 
-  log="x", pch="*LU", xaxt="n", lty=1, col=c(1,4,4), 
+matplot(2^(0:(J-1)), returns.modwt.cor[-(J+1),], type="b",
+  log="x", pch="*LU", xaxt="n", lty=1, col=c(1,4,4),
   xlab="Wavelet Scale", ylab="Wavelet Multiple Correlation")
 axis(side=1, at=2^(0:7))
 abline(h=0)
-text(2^(0:7), min(returns.modwt.cor[-(J+1),])-0.03, 
+text(2^(0:7), min(returns.modwt.cor[-(J+1),])-0.03,
   labels=exchange.names[YmaxR], adj=0.5, cex=.5)
 }
 \keyword{ statistics }
