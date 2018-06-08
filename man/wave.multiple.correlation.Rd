@@ -47,7 +47,7 @@ correlation is calculated against a linear combination of the rest. By default,
 \emph{wmc} chooses at each wavelet level the variable maximizing the multiple correlation.
 }
 \references{
- Fernández-Macho, J., 2012. Wavelet multiple correlation and cross-correlation: A multiscale analysis of Eurozone stock markets. Physica A: Statistical Mechanics and its Applications 391, 1097-1104. doi:10.1016/j.physa.2011.11.002
+ Fernández-Macho, J., 2012. Wavelet multiple correlation and cross-correlation: A multiscale analysis of Eurozone stock markets. Physica A: Statistical Mechanics and its Applications 391, 1097-1104. <DOI:10.1016/j.physa.2011.11.002>
 }
 \author{
 Javier Fernández-Macho,

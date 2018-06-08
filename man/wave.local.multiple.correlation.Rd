@@ -28,7 +28,7 @@ The letter case and length of the argument are not relevant
 as long as at least the first four characters are entered.}
   \item{p}{one minus the two-sided p-value for the confidence interval, \emph{i.e.} the cdf value.}
   \item{ymaxr}{index number of the variable whose correlation is calculated against a linear combination
- of the rest, otherwise at each wavelet level wmc chooses
+ of the rest, otherwise at each wavelet level wlmc chooses
  the one maximizing the multiple correlation.}
 }
 \details{
@@ -54,7 +54,8 @@ correlation is calculated against a linear combination of the rest.
 By default, \emph{wlmc} chooses at each wavelet level the variable maximizing the multiple correlation.}
 }
 \references{
-Fernández-Macho, J., 2017. Time-localized wavelet multiple regression and correlation, (mimeo).
+Fernández-Macho, J., 2018. Time-localized wavelet multiple regression and correlation, Physica A:
+Statistical Mechanics, vol. 490, p. 1226–1238. <DOI:10.1016/j.physa.2017.11.050>
 }
 \author{
 Javier Fernández-Macho,
@@ -72,9 +73,6 @@ University of the Basque Country, Agirre Lehendakari etorb. 83, E48015 BILBAO, S
 \examples{
 
 ## Based on  Figure 4 showing correlation structural breaks in Fernandez-Macho (2017).
-
-rm(list = ls())     # clear objects
-graphics.off()      # close graphics windows
 
 library(wavemulcor)
 library(plot3D)
