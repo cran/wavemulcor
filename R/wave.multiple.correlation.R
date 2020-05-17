@@ -1,12 +1,12 @@
-wave.multiple.correlation <-
-function(xx, N, p = .975, ymaxr=NULL) {
+wave.multiple.correlation <- #2.2.3
+function(xx, N=length(xx[[1]][[1]]), p = .975, ymaxr=NULL) {
   sum.of.squares <- function(x) { sum(x^2, na.rm=TRUE) / sum(!is.na(x)) }
   sum.of.not.squares <- function(x) { sum(x, na.rm=TRUE) / sum(!is.na(x)) }
 
-  d <- length(xx)
-  dd <- d*(d-1)/2
-  l <- length(xx[[1]])
-
+  d <- length(xx)       #number of series
+  dd <- d*(d-1)/2       #number of correlations
+  l <- length(xx[[1]])  #number of scales J+1 (wavelet coefficients at levels 1 to J plus the scaling coeffs at level J+1)
+  # N <- length(xx[[1]][[1]]) #number of observations
   x.var <- vector("list", d)
   for(j in 1:d) {
     x.var[[j]] <- unlist(lapply(xx[[j]], sum.of.squares))
@@ -38,12 +38,17 @@ function(xx, N, p = .975, ymaxr=NULL) {
     if(is.null(ymaxr)) { 
        YmaxR[i] <- Pimax <- which.max(Pidiag) ## detect i | x[i] on rest x gives max R2
     } else {YmaxR[i] <- Pimax <- ymaxr}
-    xy.mulcor[[i]] <- sqrt(1-1/Pidiag[Pimax]) ## max(sqrt(1-1/diag(solve(P))))
+	sgnr <- 1
+	if (dd==1) sgnr <- sign(r)
+    xy.mulcor[[i]] <- sgnr*sqrt(1-1/Pidiag[Pimax]) ## max(sqrt(1-1/diag(solve(P))))
   }
+
   n <- trunc(N/2^(1:l))
-  out <- data.frame(wavemulcor=xy.mulcor,
-                    lower=tanh(atanh(xy.mulcor)-qnorm(p)/sqrt(n-3)),
-                    upper=tanh(atanh(xy.mulcor)+qnorm(p)/sqrt(n-3)) )
+  sqrtn <- sapply(n,function(x){if (x>=3) sqrt(x-3) else NaN})
+  alow <- atanh(xy.mulcor)-qnorm(p)/sqrtn
+  if (dd>1) alow <- pmax(alow,0) ## wavemulcor can only be negative in bivariate case 
+  aupp <- atanh(xy.mulcor)+qnorm(p)/sqrtn
+  out <- data.frame( wavemulcor=xy.mulcor, lower=tanh(alow), upper=tanh(aupp) )
   Lst <- list(xy.mulcor=as.matrix(out),YmaxR=YmaxR)
   return(Lst)
 }

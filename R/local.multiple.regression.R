@@ -1,5 +1,5 @@
 #----------------------------------------------------------
-local.multiple.correlation <- #2.2.2
+local.multiple.regression <- #3.0.0.
   function(xx, M, window="gauss", p=.975, ymaxr=NULL) {
     window <- substr(tolower(window),1,4)
     if (window=="unif"){
@@ -30,6 +30,8 @@ local.multiple.correlation <- #2.2.2
     dd <- d*(d-1)/2       #number of correlations
     N <- nrow(xx) #number of observations
     val <- lo <- up <- YmaxR <- matrix(nrow=N)
+    rval<- rstd<- rlow<- rupp<- rtst<- rpva<- rord<- matrix(nrow=N,ncol=d+1)
+    # rcor<-matrix(nrow=N)
     for (s in 1:N) {
       x.w <- x.var <- vector("list", d)
       for(j in 1:d) {
@@ -66,6 +68,19 @@ local.multiple.correlation <- #2.2.2
           if (dd==1) sgnr <- sign(r)
           xy.mulcor <- sgnr*sqrt(1-1/Pidiag[Pimax]) ## max(sqrt(1-1/diag(solve(P))))
           if (abs(xy.mulcor)>1) browser()
+          depvar <- matrix(c(-1,0,Inf,0),1,4)
+          if (is.null(names(xx))) row.names(depvar) <- "Y"
+          else row.names(depvar) <- names(xx[Pimax])
+          x <- as.matrix(as.data.frame(x.w[-Pimax]))
+          y <- x.w[[Pimax]]
+          lm_yx <- summary(lm(formula = y ~ x))
+          xy.mulreg <- lm_yx$coefficients   #NOTE: sqrt(summary(lm(formula = y ~ x))$r.squared) == xy.mulcor!! (checked!)
+          if(Pimax<nrow(xy.mulreg)) xy.mulreg.r <- xy.mulreg[(Pimax+1):nrow(xy.mulreg),,drop=FALSE]
+          else xy.mulreg.r<-NULL
+          xy.mulreg <- rbind(xy.mulreg[1:Pimax,,drop=FALSE], depvar, xy.mulreg.r)
+          if (is.null(names(xx))) row.names(z)[1] <- "b0"
+          else row.names(xy.mulreg) <- c("b0",names(xx))
+          # xy.mulreg <- z[order(z[,4]),1:2]  #coefficients (and their stdvs) ordered from most to least significant
         }}
       #}
       swsq <- sum( weightedsq( !is.na(xx[[1]]) ,s,M) ,na.rm=TRUE)
@@ -76,13 +91,22 @@ local.multiple.correlation <- #2.2.2
       if (dd>1) lo[s] <- pmax(lo[s],0) ## wavemulcor can only be negative in bivariate case
       up[s]  <- tanh(atanh(xy.mulcor)+qnorm(p)/sqrtN)
       YmaxR[s] <- Pimax
+      # rcor[s] <- sqrt(summary(lm(formula = y ~ x))$r.squared)
+      rval[s,] <- xy.mulreg[,'Estimate']
+      rstd[s,] <- xy.mulreg[,'Std. Error']
+      rlow[s,] <- xy.mulreg[,'Estimate']-qt(p,N-d)*xy.mulreg[,'Std. Error']
+      rupp[s,] <- xy.mulreg[,'Estimate']+qt(p,N-d)*xy.mulreg[,'Std. Error']
+      rtst[s,] <- xy.mulreg[,'t value']
+      rpva[s,] <- xy.mulreg[,'Pr(>|t|)']
+      rord[s,] <- match(abs(xy.mulreg[,'t value']),sort(abs(xy.mulreg[,'t value']),decreasing=TRUE))
     } # end for (s in 1:N) loop
-    # val <- as.data.frame(val)
-    # lo <- as.data.frame(lo)
-    # up <- as.data.frame(up)
-    # YmaxR <- as.data.frame(YmaxR)
-    # names(val) <- names(lo) <- names(up) <- names(YmaxR) <- names(xx[[1]])
-    Lst <- list(val=val,lo=lo,up=up,YmaxR=YmaxR)
+    colnames(rval) <- colnames(rlow) <- colnames(rupp) <- row.names(xy.mulreg)
+    outcor <- list(val=val,lo=lo,up=up)
+    outreg <- list( rval=rval, rstd=rstd,
+                    rlow=rlow, rupp=rupp,
+                    rtst=rtst, rord=rord, rpva=rpva )
+    #) #vars=t(sapply(rval,names)) --> names of variables: useful if somehow reordered
+    Lst <- list(cor=outcor,reg=outreg,YmaxR=YmaxR,data=xx)
     return(Lst)
   }
 #--------------------------------------------------------------

@@ -1,5 +1,5 @@
-wave.local.multiple.correlation <- #2.2.2
-  function(xx, M, window="gauss", p=.975, ymaxr=NULL) {
+wave.local.multiple.cross.correlation <- #2.3.0
+  function(xx, M, window="gauss", lag.max=NULL, p=.975, ymaxr=NULL) {
     df.swap.list <- function(xx){
       yy <- list()
       for (i in seq_along(xx[[1]])){
@@ -30,16 +30,12 @@ wave.local.multiple.correlation <- #2.2.2
 
     cat("\nlev:")
     for(i in 1:l) { cat(sprintf("%s",i))
-      out <- local.multiple.correlation(x[[i]], M, window=window, p=p, ymaxr=ymaxr)
-      val[[i]] <- out$val
-      lo[[i]] <-  out$lo
-      up[[i]] <-  out$up
-      YmaxR[[i]]<- out$YmaxR
+      out <- local.multiple.cross.correlation(x[[i]], M, window=window, lag.max=lag.max, p=p, ymaxr=ymaxr)
+      val[[i]] <- as.data.frame(out$val)
+      lo[[i]] <-  as.data.frame(out$lo)
+      up[[i]] <-  as.data.frame(out$up)
+      YmaxR[[i]]<- as.vector(out$YmaxR)
     }
-    val <- as.data.frame(val)
-    lo <- as.data.frame(lo)
-    up <- as.data.frame(up)
-    YmaxR <- as.data.frame(YmaxR)
     names(val) <- names(lo) <- names(up) <- names(YmaxR) <- names(xx[[1]])
     Lst <- list(val=val,lo=lo,up=up,YmaxR=YmaxR)
     return(Lst)

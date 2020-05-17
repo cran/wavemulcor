@@ -1,15 +1,15 @@
-﻿\name{local.multiple.correlation}
-\alias{local.multiple.correlation}
-\alias{lmc}
+﻿\name{local.multiple.regression}
+\alias{local.multiple.regression}
+\alias{lmr}
 \title{
-Routine for local multiple correlation
+Routine for local multiple regression
 }
 \description{
-Produces an estimate of local multiple correlations
+Produces an estimate of local multiple regressions
 (as defined below) along with approximate confidence intervals.
 }
 \usage{
-local.multiple.correlation(xx, M, window="gauss", p = .975, ymaxr=NULL)
+local.multiple.regression(xx, M, window="gauss", p=.975, ymaxr=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,18 +31,30 @@ as long as at least the first four characters are entered.}
  of the rest, otherwise at each wavelet level lmc chooses the one maximizing the multiple correlation.}
 }
 \details{
-The routine calculates a time series of  multiple correlations out of \eqn{n} variables.
-The code is based on the calculation of the square root of the coefficient of
-determination in that linear combination of locally weighted values for which such coefficient of determination is a maximum.
+The routine calculates a set of time series of multiple regression coeffcients out of \eqn{n} variables.
 }
 \value{
 List of four elements:
-\item{val: }{ numeric vector (rows = #observations) providing the point estimates for the local multiple correlation.}
-\item{lo: }{ numeric vector (rows = #observations) providing the lower bounds of the confidence interval.}
-\item{up: }{ numeric vector (rows = #observations) providing the upper bounds of the confidence interval.}
-\item{YmaxR: }{ numeric vector (rows = #observations) giving, at each value in time, the index number of the variable 
+\item{cor: }{ List of three elements:}
+\itemize{
+\item{val: }{ numeric vector (rows = #observations) of point estimates for the local multiple correlation.}
+\item{lo: }{ numeric vector (rows = #observations) of lower bounds of the confidence interval.}
+\item{up: }{ numeric vector (rows = #observations) of upper bounds of the confidence interval.}
+}
+\item{reg: }{ List of seven elements:}
+\itemize{
+\item{rval: }{ numeric matrix (rows = #observations, cols = #regressors+1) of local regression estimates.}
+\item{rstd: }{ numeric matrix (rows = #observations, cols = #regressors+1) of their standard deviations.}
+\item{rlow: }{ numeric matrix (rows = #observations, cols = #regressors+1) of their lower bounds.}
+\item{rupp: }{ numeric matrix (rows = #observations, cols = #regressors+1) of their upper bounds.}
+\item{rtst: }{ numeric matrix (rows = #observations, cols = #regressors+1) of their t statistic values.}
+\item{rord: }{ numeric matrix (rows = #observations, cols = #regressors+1) of their index order when sorted by significance.}
+\item{rpva: }{ numeric matrix (rows = #observations, cols = #regressors+1) of their p values.}
+}
+\item{YmaxR: }{ numeric vector (rows = #observations) giving, at each value in time, the index number of the variable
 whose correlation is calculated against a linear combination of the rest.
-By default, \emph{lmc} chooses at each value in time the variable maximizing the multiple correlation.}
+By default, \emph{lmr} chooses at each value in time the variable maximizing the multiple correlation.}
+\item{data: }{ dataframe (rows = #observations, cols = #regressors) of original data.}
 }
 \references{
 Fernández-Macho, J., 2018. Time-localized wavelet multiple regression and correlation, Physica A:
@@ -91,32 +103,15 @@ xx <- data.frame(xrand1,xrand2)
 
 # ---------------------------
 
-xy.mulcor <- local.multiple.correlation(xx, M, window=window)
-
-val <- as.matrix(xy.mulcor$val)
-lo  <- as.matrix(xy.mulcor$lo)
-up  <- as.matrix(xy.mulcor$up)
-YmaxR <- as.matrix(xy.mulcor$YmaxR)
+Lst <- local.multiple.regression(xx, M, window=window) #, ymax=1)
 
 # ---------------------------
 
-old.par <- par()
+##Producing correlation plot
+plot_local.multiple.correlation(Lst)
 
-# ##Producing line plots with CI
-
-title <- paste("Local Multiple Correlation")
-sub <- paste("first",b,"obs:",round(100*cor1,1),"\% correlation;","middle",b,"obs:",
-             round(100*cor2,1),"\%","rest:",round(100*cor3,1),"\%")
-xlab <- "time"
-ylab <- "correlation"
-
-matplot(1:N,cbind(val,lo,up),
-        main=title, sub=sub,
-        xlab=xlab, ylab=ylab, type="l", lty=1, col= c(1,2,2), cex.axis=0.75)
-abline(h=0) ##Add Straight horiz and vert Lines to a Plot
-
-#reset graphics parameters
-par(old.par)
+##Producing regression plot
+plot_local.multiple.regression(Lst)
 
 }
 % Add one or more standard concepts, see file 'KEYWORDS' in the
@@ -125,4 +120,5 @@ par(old.par)
 \concept{ local regression }
 \concept{ moving regression }
 \concept{ wavelet correlation }
+\concept{ wavelet regression }
 

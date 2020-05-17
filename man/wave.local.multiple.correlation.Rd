@@ -28,13 +28,12 @@ The letter case and length of the argument are not relevant
 as long as at least the first four characters are entered.}
   \item{p}{one minus the two-sided p-value for the confidence interval, \emph{i.e.} the cdf value.}
   \item{ymaxr}{index number of the variable whose correlation is calculated against a linear combination
- of the rest, otherwise at each wavelet level wlmc chooses
- the one maximizing the multiple correlation.}
+ of the rest, otherwise at each wavelet level wlmc chooses the one maximizing the multiple correlation.}
 }
 \details{
 The routine calculates one single set of wavelet multiple correlations out of \eqn{n} variables
  that can be plotted in in either single heatmap or \eqn{J} line graphs (the former is usually the best graphic option but the latter is useful if confidence intervals are explicitly needed),
- as an alternative to trying to make sense out of \eqn{n(n-1)/2 . [J x T]} sets of local wavelet correlations.
+ as an alternative to trying to make sense out of \eqn{n(n-1)/2}  \eqn{[J \times T]} sets of local wavelet correlations.
  The code is based on the calculation, at each wavelet scale, of the square root of the coefficient of
 determination in that linear combination of locally weighted wavelet coefficients for which such coefficient of determination is a maximum.
 The code provided here is based on the wave.multiple.correlation routine in this package
@@ -43,26 +42,26 @@ which in turn is based on the wave.correlation routine in Brandon Whitcher's \em
 }
 \value{
 List of four elements:
-\item{val: }{ matrix with as many rows as observations and as many columns as levels in the wavelet transform object
+\item{val: }{ numeric matrix (rows = #observations, columns = #levels in the wavelet transform object)
 providing the point estimates for the wavelet local multiple correlation.}
-\item{lo: }{ matrix with as many rows as observations and as many columns as levels in the wavelet transform object
+\item{lo: }{ numeric matrix (rows = #observations, columns = #levels in the wavelet transform object)
 providing the lower bounds from the confidence interval.}
-\item{up: }{ matrix with as many rows as observations and as many columns as levels in the wavelet transform object
+\item{up: }{ numeric matrix (rows = #observations, columns = #levels in the wavelet transform object)
 providing the upper bounds from the confidence interval.}
-\item{YmaxR: }{ numeric vector giving, at each wavelet level, the index number of the variable whose
-correlation is calculated against a linear combination of the rest.
-By default, \emph{wlmc} chooses at each wavelet level the variable maximizing the multiple correlation.}
+\item{YmaxR: }{ numeric matrix (rows = #observations, columns = #levels in the wavelet transform object)
+giving, at each wavelet level and time, the index number of the variable whose correlation is calculated against
+a linear combination of the rest.
+By default, \emph{wlmc} chooses at each wavelet level and value in time the variable maximizing the multiple correlation.}
 }
 \references{
 Fernández-Macho, J., 2018. Time-localized wavelet multiple regression and correlation, Physica A:
-Statistical Mechanics, vol. 490, p. 1226–1238. <DOI:10.1016/j.physa.2017.11.050>
+Statistical Mechanics, vol. 490, p. 1226--1238. <DOI:10.1016/j.physa.2017.11.050>
 }
 \author{
 Javier Fernández-Macho,
-Dpt. of Econometrics and Statistics,
-& Instituto de Economía Pública,
+Dpt. of Quantitative Methods,
 University of the Basque Country, Agirre Lehendakari etorb. 83, E48015 BILBAO, Spain.
-(email: javier.fernandezmacho@ehu.eus).
+(email: javier.fernandezmacho at ehu.eus).
 }
 \note{
  Needs \emph{waveslim} package to calculate \emph{dwt} or \emph{modwt} coefficients as inputs to the routine (also for data in the example).
@@ -72,10 +71,9 @@ University of the Basque Country, Agirre Lehendakari etorb. 83, E48015 BILBAO, S
 
 \examples{
 
-## Based on  Figure 4 showing correlation structural breaks in Fernandez-Macho (2017).
+## Based on  Figure 4 showing correlation structural breaks in Fernandez-Macho (2018).
 
 library(wavemulcor)
-library(plot3D)
 options(warn = -1)
 
 data(xrand)
@@ -87,11 +85,10 @@ t3 <- (2*b+1):N
 
 wf <- "d4"
 M <- N/2^3 #sharper with N/2^4
-window <- "gaussian"
+window <- "gauss"
+J <- 3 #trunc(log2(N))-3
 
-J <- trunc(log2(N))-3
-
-# ################################################################################################
+# ---------------------------
 
 cor1 <- cor(xrand1[t1],xrand2[t1])
 cor2 <- cor(xrand1[t2],xrand2[t2])
@@ -108,7 +105,7 @@ xrand2.modwt.bw <- brick.wall(xrand2.modwt, wf)
 
 xx <- list(xrand1.modwt.bw,xrand2.modwt.bw)
 
-# ################################################################################################
+# ---------------------------
 
 xy.mulcor <- wave.local.multiple.correlation(xx, M, window=window)
 
@@ -117,7 +114,8 @@ lo  <- as.matrix(xy.mulcor$lo)
 up  <- as.matrix(xy.mulcor$up)
 YmaxR <- as.matrix(xy.mulcor$YmaxR)
 
-# ################################################################################################
+# ---------------------------
+
 old.par <- par()
 
 # ##Producing heat plot
@@ -132,15 +130,15 @@ sub <- paste("first",b,"obs:",round(100*cor1,1),"\% correlation;","middle",b,"ob
 xlab <- "time"
 ylab <- "periods"
 
-image2D(z=val, x=1:nrow(val), y=1:ncol(val),
+plot3D::image2D(z=val, x=1:nrow(val), y=1:ncol(val),
         main=title, #sub=sub,
         xlab=xlab, ylab=ylab, axes=FALSE, clab = expression(varphi),
-        rasterImage = TRUE, contour = list(lwd = 2, col = jet.col(11)))
+        rasterImage = TRUE, contour = list(lwd = 2, col = plot3D::jet.col(11)))
 axis(side=1, at=seq(10,nrow(val),by=10), cex.axis=0.75)
 axis(side=2, at=1:ncol(val),labels=scale.names, las=1,cex.axis=0.75)
 
+# ---------------------------
 
-################################################################################################
 ##Producing line plots with confidence intervals
 
 colnames(val)[1:J] <- paste0("level",1:J)
@@ -158,16 +156,14 @@ par(las=0)
 mtext('time', side=1, outer=TRUE, adj=0.5)
 mtext('Wavelet Local Multiple Correlation', side=2, outer=TRUE, adj=0.5)
 
-
 #reset graphics parameters
 par(old.par)
 
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
+% Add one or more standard concepts, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ statistics }
-\keyword{ multivariate }
-\keyword{ local correlation }
-\keyword{ local regression }
-\keyword{ moving regression }
-\keyword{ wavelet }
+\concept{ multivariate wavelet }
+\concept{ local correlation }
+\concept{ local regression }
+\concept{ moving regression }
+\concept{ wavelet correlation }

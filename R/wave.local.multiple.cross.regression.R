@@ -1,5 +1,5 @@
-wave.local.multiple.correlation <- #2.2.2
-  function(xx, M, window="gauss", p=.975, ymaxr=NULL) {
+wave.local.multiple.cross.regression <- #3.0.0
+  function(xx, M, window="gauss", lag.max=NULL, p=.975, ymaxr=NULL) {
     df.swap.list <- function(xx){
       yy <- list()
       for (i in seq_along(xx[[1]])){
@@ -24,24 +24,20 @@ wave.local.multiple.correlation <- #2.2.2
       xx[[j]] <- phase.shift(xx[[j]], wav)
     }
 
-    val <- lo <- up <- YmaxR <- list()
+    cor <- reg <- YmaxR <- list()
 
     x <- df.swap.list(xx)
 
     cat("\nlev:")
     for(i in 1:l) { cat(sprintf("%s",i))
-      out <- local.multiple.correlation(x[[i]], M, window=window, p=p, ymaxr=ymaxr)
-      val[[i]] <- out$val
-      lo[[i]] <-  out$lo
-      up[[i]] <-  out$up
-      YmaxR[[i]]<- out$YmaxR
+      out <- local.multiple.cross.regression(x[[i]], M, window=window, lag.max=lag.max, p=p, ymaxr=ymaxr)
+      cor[[i]] <- out$cor
+      reg[[i]] <- out$reg
+      YmaxR[[i]] <- out$YmaxR
     }
-    val <- as.data.frame(val)
-    lo <- as.data.frame(lo)
-    up <- as.data.frame(up)
     YmaxR <- as.data.frame(YmaxR)
-    names(val) <- names(lo) <- names(up) <- names(YmaxR) <- names(xx[[1]])
-    Lst <- list(val=val,lo=lo,up=up,YmaxR=YmaxR)
+    names(cor) <- names(reg) <- names(YmaxR) <- names(xx[[1]])
+    Lst <- list(cor=cor,reg=reg,YmaxR=YmaxR,data=xx)
     return(Lst)
   }
 #--------------------------------------------------------------

@@ -1,12 +1,11 @@
-\name{xrand1}
+﻿\name{xrand1}
 \alias{xrand1}
 \docType{data}
 \title{
 Correlation structural breaks variable 1
 }
 \description{
-Simulated data showing correlation structural breaks in Figure 4  of Fernández-Macho (2017).
-
+Simulated data showing correlation structural breaks in Figure 4  of Fernández-Macho (2018).
 }
 \usage{data("xrand")}
 \format{
@@ -24,7 +23,7 @@ However, during a period of time spanning the second third of the sample (\eqn{T
 %%  ~~ reference to a publication or URL from which the data were obtained ~~
 %}
 \references{
-Fernández-Macho, J., 2017. Time-localized wavelet multiple regression and correlation, (mimeo).
+Fernández-Macho, J., 2018. Time-localized wavelet multiple regression and correlation, Physica A, 492, https://doi.org/10.1016/j.physa.2017.11.050
 }
 \examples{
 data(xrand)
