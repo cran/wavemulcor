@@ -20,10 +20,12 @@ plot_local.multiple.cross.regression <- #3.1.0
       reg.lows[reg.order==0] <-
       reg.upps[reg.order==0] <-
       reg.pval[reg.order==0] <- NA
+    lag.max <- trunc((ncol(val)-1)/2)
+    lag0 <- lag.max+1
     YmaxR <- Lst$YmaxR
     N <- length(YmaxR)
     xxnames <- names(Lst$data)
-    lagnames <- c(paste("Lead",lmax:1),paste("Lag",0:lmax))
+    lag.labs <- c(paste("lead",lag.max:1),paste("lag",0:lag.max))
     reg.vars <- t(matrix(xxnames,length(Lst$data),N))
     reg.sel <- reg.order<=nsig & reg.pval<=0.05              #select firs nsig 5%signif. predictors
     reg.vals.sig <- reg.vals*reg.sel
@@ -39,13 +41,13 @@ plot_local.multiple.cross.regression <- #3.1.0
     # requireNamespace(RColorBrewer)
     mycolors <- RColorBrewer::brewer.pal(n=8, name="Dark2")
     par(mfcol=c(lmax+1,2), las=1, pty="m", mar=c(2,3,1,0)+.1, oma=c(1.2,1.2,0,0))
-    ymin <- min(reg.vals,na.rm=T) #head(unique(sort(reg.vals[,,-1])))[2]
-    ymax <- max(reg.vals,na.rm=T)
+    ymin <- min(reg.vals,na.rm=TRUE) #head(unique(sort(reg.vals[,,-1])))[2]
+    ymax <- max(reg.vals,na.rm=TRUE)
     mark <- paste0("\u00A9jfm-wavemulcor3.1.0_",Sys.time()," ")
-    for(i in c(-lmax:0,lmax:1)+lmax+1) {
+    for(i in c(-lmax:0,lmax:1)+lag0) {
       matplot(1:N,reg.vals[,i,], ylim=c(ymin-0.1,ymax+0.1),
               type="n", xaxt=xaxt, lty=3, col=8,
-              xlab="", ylab="", main=lagnames[i])
+              xlab="", ylab="", main=lag.labs[i])
       # shade <- 1.96*reg.stdv %>% apply(1,max)
       for (j in dim(reg.stdv)[3]:1){
         shade <- 1.96*reg.stdv[,i,j]
@@ -60,7 +62,7 @@ plot_local.multiple.cross.regression <- #3.1.0
       mtext(mark, side=1, line=-1, adj=1, col=rgb(0,0,0,.1),cex=.2)
       col <- (reg.order[,i,]<=3)*1 +(reg.order[,i,]>3)*8
       # xvar <- seq(1,N,M)
-      xvar <- t(t(which(abs(diff(sign(diff(reg.vals[,i,]))))==2,arr.ind=T))+c(1,0))
+      xvar <- t(t(which(abs(diff(sign(diff(reg.vals[,i,]))))==2,arr.ind=TRUE))+c(1,0))
       text(xvar, reg.vals[xvar,i,], labels=reg.vars[xvar,], col=col,cex=.3)
       text(xvar, reg.vals[xvar,i,], labels=reg.order[xvar,i,],pos=1, col=col,cex=.3)
       if (length(unique(YmaxR))==1) {

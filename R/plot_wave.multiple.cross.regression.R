@@ -1,10 +1,10 @@
 
-plot_wave.multiple.cross.regression <- #3.1.0
+plot_wave.multiple.cross.regression <- #3.1.1
   function(Lst, lmax, nsig=2, by=3) {
     ##Producing cross-regression plot
     # requireNamespace(magrittr)
-    YmaxR <- Lst$YmaxR[1:J]
     J <- length(Lst$YmaxR)-1
+    YmaxR <- Lst$YmaxR[1:J]
     xxnames <- names(Lst$data)
     vars <- t(matrix(xxnames,length(Lst$data),2*lmax+1)) #Lst$xy.mulreg$vars[1:J,]
     valnames <- c(paste("level",1:J),paste("s",J))
@@ -38,8 +38,8 @@ plot_wave.multiple.cross.regression <- #3.1.0
         order.sig[order.sig==0] <- NA
       # ymin <- min(lows,na.rm=TRUE)
       # ymax <- max(upps,na.rm=TRUE)
-      ymin <- min(vals,na.rm=T)
-      ymax <- max(vals,na.rm=T)
+      ymin <- min(vals,na.rm=TRUE)
+      ymax <- max(vals,na.rm=TRUE)
       matplot(1:(2*lmax+1),vals, ylim=c(ymin-0.1,ymax+0.1), xaxt="n",
               type="n", lty=3,
               xlab="", ylab="", main=valnames[j], col=8)

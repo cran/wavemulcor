@@ -2,7 +2,7 @@
 title: "**wavemulcor:**"
 subtitle: "Wavelet Routines for Global and Local\n\n 
           Multiple Regression and Correlation"
-package: wavemulcor V. 3.1.0
+package: wavemulcor V. 3.1.2
 date: "`r Sys.Date()`"
 author: J Fernández-Macho\cr
         Dpt.\ of Quantitative Methods\cr
@@ -20,11 +20,14 @@ abstract: |
              The code is based on the calculation, at each wavelet scale, of the 
              square root of the coefficient of determination in a linear combination 
              of variables for which such coefficient of determination is a maximum. 
-# output: rmarkdown::html_vignette
-output: rmarkdown::pdf_document
-classoption: a4paper
+# header-includes:
+#    - \usepackage{framed}
+# output:
+  # rmarkdown::pdf_document:
+  #   keep_tex: true
+  #   keep_md: true
+# classoption: a4paper
 bibliography: "jfbib4wavemulcor.bib"
-# csl: "science.csl"
 toc: TRUE
 vignette: >
   %\VignetteIndexEntry{wavemulcor}
@@ -240,7 +243,7 @@ the cross-correlation output can be fed into a *heatmap_* auxiliary routine to o
 
 ```{r label=heat_wmcc, echo=-1, results='hide'}
 ##Producing correlation heat map
-heatmap_wave.multiple.cross.correlation(Lst, lmax) #, xaxt="s", pdf.write=NULL)
+heatmap_wave.multiple.cross.correlation(Lst, lmax) #, by=3, ci=NULL, pdf.write=NULL)
 ```
 
 
@@ -308,7 +311,7 @@ The output can be fed into a *heatmap_* auxiliary routine to obtain a standard h
 
 ```{r label=heat_wlmc, echo=-1, results='hide'}
 ##Producing correlation heat map
-heatmap_wave.local.multiple.correlation(Lst) #, xaxt="s", pdf.write=NULL)
+heatmap_wave.local.multiple.correlation(Lst) #, xaxt="s", ci=NULL, pdf.write=NULL)
 ```
 
 The figure shows how the WLMC evolves both over time and across wavelet levels, the latter shown as time periods $(2^j,2^{j+1}]$ after conversion into their corresponding time units intervals.
@@ -365,8 +368,8 @@ For example, _heatmap_wave.local.multiple.cross.correlation_ produces a page of 
 
 ```{r label=heat_wlmcc_lag, echo=-1, results='hide'}
 ##Producing cross-correlation heat map
-heatmap_wave.local.multiple.cross.correlation(Lst, lmax, lag.first=FALSE) 
-             #, xaxt="s", pdf.write=NULL)
+heatmap_wave.local.multiple.cross.correlation(Lst, lmax=lmax, lag.first=FALSE) 
+             #, xaxt="s", ci=NULL, pdf.write=NULL)
 ```
 
 Note that we can use the option _lag.first=TRUE_ to alter the role of lags and levels in the plots. 
@@ -376,7 +379,7 @@ That is, it will make one plot per lag, where the vertical axis are wavelet peri
 ```{r label=heat_wlmcc_lev, echo=-1, results='hide'}
 ##Producing cross-correlation heat map
 heatmap_wave.local.multiple.cross.correlation(Lst, lmax=2, lag.first=TRUE) 
-             #, xaxt="s", pdf.write=NULL)
+             #, xaxt="s", ci=NULL, pdf.write=NULL)
 ```
 
 Once again, if confidence intervals are required we need to use the  *plot_* auxiliary routines to obtain a standard WLMCC plots:

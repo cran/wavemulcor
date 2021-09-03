@@ -57,9 +57,10 @@ plot_wave.local.multiple.cross.correlation <- #3.1.0
         vj <- cor[[j]]
         if (!is.null(pdf.write))
           cairo_pdf(paste0(pdf.write,"_WLMCC_",level.lab[j],".pdf"), width=8.27,height=11.69)
-        par(mfrow=c(lmax+1,2), las=1, pty="m", mar=c(2,3,1,0)+.1, oma=c(1.2,1.2,1.2,0))
+        par(mfcol=c(lmax+1,2), las=1, pty="m", mar=c(2,3,1,0)+.1, oma=c(1.2,1.2,1.2,0))
         for(i in c(-lmax:0,lmax:1)+lmax+1) {
-          blocki(lagnames[i])
+        # for(i in 1:(2*lmax+1)) {
+        blocki(lagnames[i])
         }
         par(las=0)
         mtext('time', side=1, outer=TRUE, adj=0.5)

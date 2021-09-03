@@ -69,7 +69,7 @@ Lst <- wave.multiple.cross.regression(xx, lmax)
 
 ## ----label=heat_wmcc, echo=-1, results='hide'---------------------------------
 ##Producing correlation heat map
-heatmap_wave.multiple.cross.correlation(Lst, lmax) #, xaxt="s", pdf.write=NULL)
+heatmap_wave.multiple.cross.correlation(Lst, lmax) #, by=3, ci=NULL, pdf.write=NULL)
 
 ## ----label=plot_wmcc, echo=-1, results='hide'---------------------------------
 ##Producing correlation plot
@@ -100,7 +100,7 @@ Lst <- wave.local.multiple.regression(xx, M, window=window) #, ymaxr=1)
 
 ## ----label=heat_wlmc, echo=-1, results='hide'---------------------------------
 ##Producing correlation heat map
-heatmap_wave.local.multiple.correlation(Lst) #, xaxt="s", pdf.write=NULL)
+heatmap_wave.local.multiple.correlation(Lst) #, xaxt="s", ci=NULL, pdf.write=NULL)
 
 ## ----label=plot_wlmc, echo=-1, results='hide'---------------------------------
 ##Producing line plots with CI
@@ -131,13 +131,13 @@ Lst <- wave.local.multiple.cross.regression(xx, M, window=window, lag.max=lmax) 
 
 ## ----label=heat_wlmcc_lag, echo=-1, results='hide'----------------------------
 ##Producing cross-correlation heat map
-heatmap_wave.local.multiple.cross.correlation(Lst, lmax, lag.first=FALSE) 
-             #, xaxt="s", pdf.write=NULL)
+heatmap_wave.local.multiple.cross.correlation(Lst, lmax=lmax, lag.first=FALSE) 
+             #, xaxt="s", ci=NULL, pdf.write=NULL)
 
 ## ----label=heat_wlmcc_lev, echo=-1, results='hide'----------------------------
 ##Producing cross-correlation heat map
 heatmap_wave.local.multiple.cross.correlation(Lst, lmax=2, lag.first=TRUE) 
-             #, xaxt="s", pdf.write=NULL)
+             #, xaxt="s", ci=NULL, pdf.write=NULL)
 
 ## ----label=plot_wlmcc, echo=-1, eval=FALSE------------------------------------
 #  ##Producing cross-correlation plot
